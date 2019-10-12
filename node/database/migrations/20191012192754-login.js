@@ -21,6 +21,7 @@ exports.up = function (db, callback) {
           id: {type: 'int', primaryKey: true, autoIncrement: true},
           username: {type: 'string', length: 50},
           password: {type: 'string', length: 32},
+          token: {type: 'string', length: 32},
         },
         ifNotExists: true
       }, function (err) {

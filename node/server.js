@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const md5 = require('md5');
 
 app.use(
     express.static(__dirname + '/public'),
@@ -39,50 +40,31 @@ con.connect(err => {
     });
 });
 
-app.get('/api/v1/measurement', (req, res) => {
-    let sql = `
-            SELECT
-                *
-            FROM
-              measurement
-            ORDER BY id DESC
-            `;
-    con.query(sql, (err, measurement) => {
-        if (err) throw err;
-        let sum = 0;
-
-        Object.keys(measurement).slice(0, 5).forEach( key => {
-            console.log(measurement[key].temperature);
-            sum += measurement[key].temperature;
-        });
-        console.log('Sum', sum);
-        console.log('Avg', sum / 5);
-        const data = {
-            average : (sum / 5).toFixed(1),
-            rows: measurement
-        };
-
-        res.json(data)
-    });
-});
-
-
-app.put('/api/v1/measurement/:id', (req, res) => {
-    const userInput = req.body;
-    const id = req.params.id;
+app.get('/api/v1/login', (req, res) => {
+    const userInput = req.headers;
+    const username = userInput.username ? userInput.username : 'root';
+    const password = userInput.password ? md5(userInput.password) : 'root';
     sql = `
-          UPDATE measurement 
-          SET temperature=${userInput.temperature} 
-          WHERE id=${id};
+          SELECT * 
+          FROM login 
+          WHERE username='${username}' 
+          AND password='${password}'
+          ;
         `;
 
     con.query(sql, (err, result) => {
         if (err) throw  err;
         console.log(result);
-        res.json(result);
+        const auth = {
+            authenticated: false
+        };
+        if(result.length > 0) {
+            auth.authenticated = true;
+        }
+
+        res.json(auth);
     });
 
-    console.log(req.body);
     console.log(sql);
 });
 
