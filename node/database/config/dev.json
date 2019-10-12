@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "host": "localhost",
+    "database": "lab2login",
+    "driver": "mysql",
+    "user": "root",
+    "password": "root",
+    "multipleStatements": true,
+    "sql-file": true
+  }
+}
