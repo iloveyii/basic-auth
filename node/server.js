@@ -42,8 +42,16 @@ con.connect(err => {
 
 app.get('/api/v1/login', (req, res) => {
     const userInput = req.headers;
-    const username = userInput.username ? userInput.username : 'root';
-    const password = userInput.password ? md5(userInput.password) : 'root';
+    // const username = userInput.username ? userInput.username : 'root';
+    // const password = userInput.password ? md5(userInput.password) : 'root';
+    console.log('UserInput', userInput);
+
+    const base64Credentials =  req.headers.authorization.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    let [username, password] = credentials.split(':');
+    console.log('credentials', credentials);
+    password = md5(password);
+
     sql = `
           SELECT * 
           FROM login 

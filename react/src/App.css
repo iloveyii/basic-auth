@@ -28,3 +28,7 @@
 .sortable thead tr th:hover {
   background-color: grey;
 }
+
+.form-control {
+  margin-bottom: 10px;
+}
